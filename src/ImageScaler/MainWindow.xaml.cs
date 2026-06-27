@@ -52,34 +52,42 @@ public partial class MainWindow : Window
                 SizeBytes = new FileInfo(path).Length
             });
         }
-        StatusLabel.Text = ignored > 0 ? $"{ignored} Nicht-Bild-Datei(en) ignoriert." : "";
+        StatusLabel.Text = ignored > 0 ? string.Format(Loc.Instance["Ignored"], ignored) : "";
     }
 
-    // ---- Einstellungen ----
+    // ---- Settings ----
+    private void LanguageBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        var lang = (LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string;
+        if (lang != null) Loc.Instance.SetLanguage(lang);
+    }
+
+    private bool IsCustomSelected => TargetPreset.SelectedIndex == TargetPreset.Items.Count - 1;
+
     private void TargetPreset_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (CustomMb == null) return;
-        CustomMb.IsEnabled = (TargetPreset.SelectedItem as ComboBoxItem)?.Content as string == "Eigene…";
+        CustomMb.IsEnabled = IsCustomSelected;
     }
 
     private bool TryGetTargetBytes(out long bytes)
     {
         bytes = 0;
-        var selected = (TargetPreset.SelectedItem as ComboBoxItem)?.Content as string ?? "";
         double mb;
-        if (selected == "Eigene…")
+        if (IsCustomSelected)
         {
             if (!double.TryParse(CustomMb.Text.Trim().Replace(',', '.'),
                     System.Globalization.NumberStyles.Any,
                     System.Globalization.CultureInfo.InvariantCulture, out mb) || mb <= 0)
             {
-                StatusLabel.Text = "Bitte eine gültige Grösse (MB) eingeben.";
+                StatusLabel.Text = Loc.Instance["InvalidSize"];
                 return false;
             }
         }
         else
         {
-            mb = double.Parse(new string(selected.TakeWhile(c => char.IsDigit(c) || c == '.').ToArray()),
+            var preset = (TargetPreset.SelectedItem as ComboBoxItem)?.Content as string ?? "";
+            mb = double.Parse(new string(preset.TakeWhile(c => char.IsDigit(c) || c == '.').ToArray()),
                 System.Globalization.CultureInfo.InvariantCulture);
         }
         bytes = (long)(mb * 1024 * 1024);
@@ -89,11 +97,11 @@ public partial class MainWindow : Window
     // ---- Komprimieren ----
     private async void CompressButton_Click(object sender, RoutedEventArgs e)
     {
-        if (!Inputs.Any()) { StatusLabel.Text = "Keine Bilder zum Komprimieren."; return; }
+        if (!Inputs.Any()) { StatusLabel.Text = Loc.Instance["NoImages"]; return; }
         if (!TryGetTargetBytes(out var target)) return;
 
         var session = ((App)Application.Current).Session;
-        if (session == null) { StatusLabel.Text = "Keine Session – Neustart nötig."; return; }
+        if (session == null) { StatusLabel.Text = Loc.Instance["NoSession"]; return; }
 
         CompressButton.IsEnabled = false;
         ClearButton.IsEnabled = false;
@@ -119,8 +127,8 @@ public partial class MainWindow : Window
                     Quality = result.Quality,
                     TargetMet = result.TargetMet,
                     StatusText = result.TargetMet
-                        ? $"Qualität {result.Quality}"
-                        : "Zielgrösse nicht erreicht"
+                        ? string.Format(Loc.Instance["Quality"], result.Quality)
+                        : Loc.Instance["TargetNotReached"]
                 });
             }
             catch (Exception ex)
@@ -132,7 +140,7 @@ public partial class MainWindow : Window
                     FileName = input.FileName,
                     SizeBytes = input.SizeBytes,
                     HasError = true,
-                    StatusText = "Fehler: " + ex.Message
+                    StatusText = Loc.Instance["ErrorPrefix"] + ex.Message
                 });
             }
             Progress.Value = ++done;
@@ -140,7 +148,7 @@ public partial class MainWindow : Window
 
         CompressButton.IsEnabled = true;
         ClearButton.IsEnabled = true;
-        StatusLabel.Text = failed > 0 ? $"Fertig – {failed} fehlgeschlagen." : "Fertig.";
+        StatusLabel.Text = failed > 0 ? string.Format(Loc.Instance["DoneFailed"], failed) : Loc.Instance["Done"];
     }
 
     private static string UniquePath(string folder, string fileName)

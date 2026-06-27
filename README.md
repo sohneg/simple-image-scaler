@@ -1,94 +1,99 @@
-# ImageScaler
+# Simple Image Scaler
 
-Ein schlankes Windows-Tool zum **Komprimieren von Bildern auf eine Zielgrösse** (z.B. 10 MB) – ideal, um Fotos schnell unter ein Upload-Limit (Discord, Mail, Web) zu bringen.
+A lightweight Windows tool that **compresses images down to a target file size** (e.g. 10 MB) — perfect for getting photos under an upload limit (Discord, email, the web) in seconds.
 
-Drei Spalten, ganz wie ein Datei-Manager: links die Originale reinziehen, in der Mitte die Zielgrösse wählen, rechts die fertigen Bilder rausziehen. Die Ergebnisse sind temporär und werden beim Schliessen automatisch aufgeräumt.
+Three columns, just like a file manager: drag your originals in on the left, pick a target size in the middle, drag the finished images out on the right. The results are temporary and are cleaned up automatically when you close the app.
 
-> ⚠️ **Windows only.** ImageScaler ist eine WPF-App und läuft nur unter Windows (x64).
+Available in **English and German** (English by default — switch any time in the settings).
 
----
-
-## Funktionen
-
-- 🎯 **Zielgrösse pro Bild** – feste Presets (8 / 10 / 25 / 50 MB) oder eigener Wert in MB
-- 🔍 **Beste Qualität bei gegebener Grösse** – die Auflösung bleibt erhalten; nur die JPEG-Qualität wird per Binärsuche so hoch wie möglich gehalten, bis das Bild unter die Zielgrösse passt
-- 🖱️ **Drag & Drop rein und raus** – Bilder links reinziehen, fertige Bilder rechts direkt nach Discord, in einen Ordner oder in eine E-Mail ziehen
-- 🧹 **Automatisches Aufräumen** – die komprimierten Bilder liegen nur temporär und werden beim Beenden gelöscht (verwaiste Reste eines Absturzes werden beim nächsten Start entfernt)
-- 🟠 **Klare Rückmeldung** – pro Bild werden Qualität und neue Grösse angezeigt; nicht erreichbare Zielgrössen werden orange, Fehler rot markiert
-- 📦 **Keine Installation nötig** – eine einzige `.exe`, die komplette Runtime ist eingebettet
+> ⚠️ **Windows only.** Simple Image Scaler is a WPF app and runs on Windows (x64) only.
 
 ---
 
-## Verwendung
+## Features
 
-1. **Bilder reinziehen** – Ziehe ein oder mehrere Bilder aus dem Explorer in die **linke** Spalte („Original"). Unterstützt werden `.jpg`, `.jpeg`, `.png`, `.bmp`, `.webp`, `.gif`. Andere Dateien werden ignoriert.
-2. **Zielgrösse wählen** – In der **Mitte** ein Preset (8 / 10 / 25 / 50 MB) auswählen oder `Eigene…` und einen MB-Wert eintippen.
-3. **Komprimieren** – Auf **Komprimieren** klicken. Der Fortschrittsbalken läuft, die Ergebnisse erscheinen rechts als JPEG mit neuer Grösse und Qualitäts-Info.
-4. **Rausziehen** – In der **rechten** Spalte ein oder mehrere Bilder markieren und per Drag & Drop dorthin ziehen, wo du sie brauchst (Discord-Chat, Ordner, Mail …).
-5. **Schliessen** – Beim Beenden werden die temporären Ergebnisse automatisch gelöscht. Was du vorher rausgezogen hast, bleibt natürlich erhalten.
-
-> 💡 Das Ausgabeformat ist immer **JPEG**, weil sich damit die Zielgrösse am feinsten treffen lässt und es überall geöffnet werden kann. (PNG-Transparenz geht dabei verloren.)
-
----
-
-## Download & Start
-
-1. Lade die aktuelle `ImageScaler.exe` aus den [Releases](../../releases) herunter.
-2. Doppelklick – fertig. Eine Installation ist nicht nötig.
-
-Beim ersten Start kann der **Windows-SmartScreen** warnen („Unbekannter Herausgeber"), weil die `.exe` nicht signiert ist. Über **Weitere Informationen → Trotzdem ausführen** startest du sie.
+- 🎯 **Target size per image** – fixed presets (8 / 10 / 25 / 50 MB) or your own value in MB
+- 🔍 **Best quality for the size** – resolution is preserved; only the JPEG quality is tuned via binary search to the highest value that still fits under the target
+- 🖱️ **Drag & drop in and out** – drag images into the left list, drag the finished ones straight into Discord, a folder, or an email
+- 🌍 **Bilingual UI** – English and German, switchable at runtime
+- 🧹 **Automatic cleanup** – compressed images are temporary and deleted on exit (orphaned files from a crash are removed on the next start)
+- 🟠 **Clear feedback** – each image shows its quality and new size; targets that can't be met are marked orange, errors red
+- 📦 **No installation** – a single `.exe` with the runtime bundled in
 
 ---
 
-## Aus dem Quellcode bauen
+## Usage
 
-**Voraussetzungen:** [.NET SDK 11](https://dotnet.microsoft.com/download) (oder neuer), Windows x64.
+1. **Drag images in** – Drag one or more images from Explorer into the **left** column ("Original"). Supported: `.jpg`, `.jpeg`, `.png`, `.bmp`, `.webp`, `.gif`. Other files are ignored.
+2. **Pick a target size** – In the **middle**, choose a preset (8 / 10 / 25 / 50 MB), or select `Custom…` and type a value in MB.
+3. **Compress** – Click **Compress**. The progress bar runs and the results appear on the right as JPEGs with their new size and quality info.
+4. **Drag out** – In the **right** column, select one or more images and drag them wherever you need them (a Discord chat, a folder, an email …).
+5. **Close** – When you exit, the temporary results are deleted automatically. Anything you already dragged out is kept, of course.
+
+> 💡 The output format is always **JPEG**, because it lets the target size be hit most precisely and opens everywhere. (PNG transparency is lost in the process.)
+
+> 🌐 Use the **Language** dropdown at the top of the settings column to switch between English and German.
+
+---
+
+## Download & run
+
+1. Download the latest `Simple Image Scaler.exe` from the [Releases](../../releases).
+2. Double-click — that's it. No installation required.
+
+On first launch **Windows SmartScreen** may warn ("Unknown publisher") because the `.exe` is not code-signed. Click **More info → Run anyway** to start it.
+
+---
+
+## Build from source
+
+**Requirements:** [.NET SDK 11](https://dotnet.microsoft.com/download) (or newer), Windows x64.
 
 ```bash
-# Repository klonen
-git clone https://github.com/<dein-user>/ImageScaler.git
-cd ImageScaler
+# Clone the repository
+git clone https://github.com/<your-user>/simple-image-scaler.git
+cd simple-image-scaler
 
-# Tests ausführen
+# Run the tests
 dotnet test
 
-# Im Debug-Modus starten
+# Run in debug mode
 dotnet run --project src/ImageScaler
 ```
 
-### Eine eigenständige .exe erzeugen
+### Produce a standalone .exe
 
 ```bash
 dotnet publish src/ImageScaler/ImageScaler.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish_out
 ```
 
-Die fertige `ImageScaler.exe` liegt danach im Ordner `publish_out` (ca. 68 MB, da .NET-Runtime und SkiaSharp eingebettet sind).
+The resulting `Simple Image Scaler.exe` will be in the `publish_out` folder (~68 MB, since the .NET runtime and SkiaSharp are bundled in).
 
 ---
 
-## Projektstruktur
+## Project structure
 
 ```
 src/
-  ImageScaler.Core/     # UI-freie Komprimierungs-Logik (JpegCompressor, TempSession)
-  ImageScaler/          # WPF-App (3-Spalten-UI, Drag & Drop)
+  ImageScaler.Core/     # UI-free compression logic (JpegCompressor, TempSession)
+  ImageScaler/          # WPF app (3-column UI, drag & drop, localization)
 tests/
-  ImageScaler.Tests/    # Unit-Tests für die Kern-Logik
-docs/plans/             # Design- und Implementierungs-Dokument
+  ImageScaler.Tests/    # Unit tests for the core logic
+docs/plans/             # Design and implementation documents
 ```
 
 ---
 
-## Technik
+## How it works
 
-- **[.NET 11](https://dotnet.microsoft.com/) / WPF** – Desktop-UI
-- **[SkiaSharp](https://github.com/mono/SkiaSharp)** (MIT) – Bild-Encoding
-- **xUnit** – Tests
+- **[.NET 11](https://dotnet.microsoft.com/) / WPF** – desktop UI
+- **[SkiaSharp](https://github.com/mono/SkiaSharp)** (MIT) – image encoding
+- **xUnit** – tests
 
-Die Komprimierung lädt das Bild, encodiert es per Binärsuche bei verschiedenen JPEG-Qualitätsstufen (5–95) wiederholt im Speicher und wählt die höchste Qualität, deren Datei noch unter der Zielgrösse liegt. Liegt das Bild schon darunter, wird es mit maximaler Qualität gespeichert; ist die Zielgrösse selbst bei minimaler Qualität nicht erreichbar, wird das Bild trotzdem ausgegeben und markiert.
+Compression loads the image and repeatedly encodes it in memory at different JPEG quality levels (5–95) using a binary search, then picks the highest quality whose file still fits under the target size. If the image is already smaller than the target it is saved at maximum quality; if the target can't be reached even at minimum quality, the image is still produced and flagged.
 
 ---
 
-## Lizenz
+## License
 
-Noch keine Lizenz festgelegt. Wenn du das Projekt öffentlich und für andere nutzbar machen möchtest, füge eine `LICENSE`-Datei hinzu (z.B. [MIT](https://choosealicense.com/licenses/mit/)). Die verwendete Bibliothek SkiaSharp steht unter der MIT-Lizenz und ist auch für kommerzielle Nutzung frei.
+No license has been chosen yet. If you want to make the project public and usable by others, add a `LICENSE` file (e.g. [MIT](https://choosealicense.com/licenses/mit/)). The bundled SkiaSharp library is MIT-licensed and free for commercial use.
