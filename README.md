@@ -98,4 +98,4 @@ Compression loads the image and repeatedly encodes it in memory at different JPE
 
 ## License
 
-No license has been chosen yet. If you want to make the project public and usable by others, add a `LICENSE` file (e.g. [MIT](https://choosealicense.com/licenses/mit/)). The bundled SkiaSharp library is MIT-licensed and free for commercial use.
+Released under the [MIT License](LICENSE) — free to use, modify, and distribute, including commercially. The bundled SkiaSharp library is also MIT-licensed.
