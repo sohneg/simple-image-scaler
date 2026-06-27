@@ -33,6 +33,18 @@ public class JpegCompressorTests
         Assert.True(result.TargetMet);
         Assert.True(result.Size <= target, $"Size {result.Size} > target {target}");
         Assert.InRange(result.Quality, 5, 95);
+
+        // Kern-Eigenschaft: es ist die HÖCHSTE passende Qualität – eine Stufe höher
+        // muss die Zielgrösse überschreiten (sofern nicht schon bei Maximalqualität).
+        if (result.Quality < 95)
+        {
+            using var bmp = SKBitmap.Decode(path);
+            using var img = SKImage.FromBitmap(bmp);
+            using var oneHigher = img.Encode(SKEncodedImageFormat.Jpeg, result.Quality + 1);
+            Assert.True(oneHigher.Size > target,
+                $"Quality {result.Quality}+1 ergab {oneHigher.Size} <= target {target} – nicht maximal");
+        }
+
         File.Delete(path);
     }
 
