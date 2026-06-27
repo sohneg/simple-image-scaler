@@ -6,6 +6,8 @@ Three columns, just like a file manager: drag your originals in on the left, pic
 
 Available in **English and German** (English by default — switch any time in the settings).
 
+![Simple Image Scaler](docs/images/screenshot.png)
+
 > ⚠️ **Windows only.** Simple Image Scaler is a WPF app and runs on Windows (x64) only.
 
 ---
