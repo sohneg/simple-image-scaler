@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ImageScaler.Core/ImageScaler.Core.csproj" />
+    <Project Path="src/ImageScaler/ImageScaler.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ImageScaler.Tests/ImageScaler.Tests.csproj" />
+  </Folder>
+</Solution>
