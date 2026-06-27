@@ -98,4 +98,8 @@ Compression loads the image and repeatedly encodes it in memory at different JPE
 
 ## License
 
-Released under the [MIT License](LICENSE) — free to use, modify, and distribute, including commercially. The bundled SkiaSharp library is also MIT-licensed.
+Released under the [PolyForm Noncommercial License 1.0.0](LICENSE).
+
+You are free to use, modify, and share this software **for any noncommercial purpose** (personal use, hobby projects, education, charities, etc.). **Commercial use — including selling it — is not permitted** without a separate license from the author. For commercial licensing, please get in touch.
+
+The bundled SkiaSharp library is MIT-licensed.
