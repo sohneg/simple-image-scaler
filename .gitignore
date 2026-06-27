@@ -4,3 +4,4 @@ obj/
 .vs/
 .claude/
 publish_out/
+release/
