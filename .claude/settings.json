@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm ImageScaler.slnx)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet sln *)"
+    ]
+  }
+}
