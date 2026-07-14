@@ -40,6 +40,8 @@ public sealed class Loc : INotifyPropertyChanged
             ["Quality"] = "Quality {0}",
             ["TargetNotReached"] = "Target size not reached",
             ["ErrorPrefix"] = "Error: ",
+            ["TabCompress"] = "Compress",
+            ["TabSlice"] = "Slice",
         },
         ["de"] = new()
         {
@@ -64,6 +66,8 @@ public sealed class Loc : INotifyPropertyChanged
             ["Quality"] = "Qualität {0}",
             ["TargetNotReached"] = "Zielgrösse nicht erreicht",
             ["ErrorPrefix"] = "Fehler: ",
+            ["TabCompress"] = "Komprimieren",
+            ["TabSlice"] = "Schneiden",
         },
     };
 

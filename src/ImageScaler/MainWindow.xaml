@@ -5,156 +5,78 @@
         Title="Simple Image Scaler" Height="640" Width="1080"
         Background="#FF20232A" FontFamily="Segoe UI" FontSize="13">
 
-    <Window.Resources>
-        <local:PathToThumbnailConverter x:Key="Thumb"/>
+    <TabControl Background="Transparent" BorderThickness="0" Margin="8">
+        <TabItem Header="{Binding [TabCompress], Source={x:Static local:Loc.Instance}}">
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-        <Style TargetType="TextBlock" x:Key="Header">
-            <Setter Property="Foreground" Value="#FFE6E6E6"/>
-            <Setter Property="FontSize" Value="15"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Margin" Value="4,0,0,8"/>
-        </Style>
+                <!-- LINKS: Eingang -->
+                <DockPanel Grid.Column="0" Margin="0,0,12,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding [Original], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
+                    <Grid>
+                        <ListBox x:Name="InputList" Style="{StaticResource CardList}" AllowDrop="True"
+                                 DragOver="InputList_DragOver" Drop="InputList_Drop"/>
+                        <TextBlock x:Name="InputHint" IsHitTestVisible="False"
+                                   Text="{Binding [DragHint], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </DockPanel>
 
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="#FF3B82F6"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12,8"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                <!-- MITTE: Einstellungen -->
+                <Border Grid.Column="1" Background="#FF22262E" CornerRadius="8" Padding="16">
+                    <StackPanel>
+                        <TextBlock Text="{Binding [Settings], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
 
-        <!-- Vorlage für Listeneinträge -->
-        <DataTemplate x:Key="ItemTpl">
-            <Border Background="#FF2C313A" CornerRadius="6" Padding="8" Margin="0,3">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Border Width="48" Height="48" CornerRadius="4" ClipToBounds="True" Background="#FF1B1E24">
-                        <Image Source="{Binding FilePath, Converter={StaticResource Thumb}}" Stretch="UniformToFill"/>
-                    </Border>
-                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding FileName}" Foreground="#FFEDEDED" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Text="{Binding SizeDisplay}" Foreground="#FF9AA4B2" Margin="0,2,0,0"/>
-                        <TextBlock Text="{Binding StatusText}" Margin="0,2,0,0">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="#FF6EE7B7"/>
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding StatusText}" Value="">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding TargetMet}" Value="False">
-                                            <Setter Property="Foreground" Value="#FFFBBF24"/>
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding HasError}" Value="True">
-                                            <Setter Property="Foreground" Value="#FFF87171"/>
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                        <TextBlock Text="{Binding [Language], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,8,0,4"/>
+                        <ComboBox x:Name="LanguageBox" SelectionChanged="LanguageBox_SelectionChanged">
+                            <ComboBoxItem Content="English" Tag="en" IsSelected="True"/>
+                            <ComboBoxItem Content="Deutsch" Tag="de"/>
+                        </ComboBox>
+
+                        <TextBlock Text="{Binding [TargetSize], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,16,0,4"/>
+                        <ComboBox x:Name="TargetPreset" SelectionChanged="TargetPreset_SelectionChanged">
+                            <ComboBoxItem Content="8 MB"/>
+                            <ComboBoxItem Content="10 MB" IsSelected="True"/>
+                            <ComboBoxItem Content="25 MB"/>
+                            <ComboBoxItem Content="50 MB"/>
+                            <ComboBoxItem Content="{Binding [Custom], Source={x:Static local:Loc.Instance}}"/>
+                        </ComboBox>
+
+                        <TextBlock Text="{Binding [CustomSize], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+                        <TextBox x:Name="CustomMb" IsEnabled="False" Text="10" Padding="6"/>
+
+                        <TextBlock Text="{Binding [Format], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+
+                        <Button x:Name="CompressButton" Content="{Binding [Compress], Source={x:Static local:Loc.Instance}}" Margin="0,16,0,0" Click="CompressButton_Click"/>
+                        <ProgressBar x:Name="Progress" Height="6" Margin="0,12,0,0" Minimum="0" Background="#FF2C313A" Foreground="#FF3B82F6" BorderThickness="0"/>
+                        <TextBlock x:Name="StatusLabel" Foreground="#FF9AA4B2" Margin="4,10,0,0" TextWrapping="Wrap"/>
+
+                        <Button x:Name="ClearButton" Content="{Binding [ClearList], Source={x:Static local:Loc.Instance}}" Margin="0,16,0,0"
+                                Background="#FF374151" Click="ClearButton_Click"/>
                     </StackPanel>
-                </Grid>
-            </Border>
-        </DataTemplate>
+                </Border>
 
-        <Style TargetType="ListBox" x:Key="CardList">
-            <Setter Property="Background" Value="#FF181B20"/>
-            <Setter Property="BorderBrush" Value="#FF333842"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="ItemTemplate" Value="{StaticResource ItemTpl}"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-            <Setter Property="ItemContainerStyle">
-                <Setter.Value>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="BorderThickness" Value="0"/>
-                    </Style>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
-
-    <Grid Margin="16">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="300"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-
-        <!-- LINKS: Eingang -->
-        <DockPanel Grid.Column="0" Margin="0,0,12,0">
-            <TextBlock DockPanel.Dock="Top" Text="{Binding [Original], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
-            <Grid>
-                <ListBox x:Name="InputList" Style="{StaticResource CardList}" AllowDrop="True"
-                         DragOver="InputList_DragOver" Drop="InputList_Drop"/>
-                <TextBlock x:Name="InputHint" IsHitTestVisible="False"
-                           Text="{Binding [DragHint], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <!-- RECHTS: Ergebnis -->
+                <DockPanel Grid.Column="2" Margin="12,0,0,0">
+                    <TextBlock DockPanel.Dock="Top" Text="{Binding [Result], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
+                    <Grid>
+                        <ListBox x:Name="OutputList" Style="{StaticResource CardList}" SelectionMode="Extended"
+                                 PreviewMouseLeftButtonDown="OutputList_PreviewMouseLeftButtonDown"
+                                 MouseMove="OutputList_MouseMove"/>
+                        <TextBlock x:Name="OutputHint" IsHitTestVisible="False"
+                                   Text="{Binding [OutputHint], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </DockPanel>
             </Grid>
-        </DockPanel>
+        </TabItem>
 
-        <!-- MITTE: Einstellungen -->
-        <Border Grid.Column="1" Background="#FF22262E" CornerRadius="8" Padding="16">
-            <StackPanel>
-                <TextBlock Text="{Binding [Settings], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
-
-                <TextBlock Text="{Binding [Language], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,8,0,4"/>
-                <ComboBox x:Name="LanguageBox" SelectionChanged="LanguageBox_SelectionChanged">
-                    <ComboBoxItem Content="English" Tag="en" IsSelected="True"/>
-                    <ComboBoxItem Content="Deutsch" Tag="de"/>
-                </ComboBox>
-
-                <TextBlock Text="{Binding [TargetSize], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,16,0,4"/>
-                <ComboBox x:Name="TargetPreset" SelectionChanged="TargetPreset_SelectionChanged">
-                    <ComboBoxItem Content="8 MB"/>
-                    <ComboBoxItem Content="10 MB" IsSelected="True"/>
-                    <ComboBoxItem Content="25 MB"/>
-                    <ComboBoxItem Content="50 MB"/>
-                    <ComboBoxItem Content="{Binding [Custom], Source={x:Static local:Loc.Instance}}"/>
-                </ComboBox>
-
-                <TextBlock Text="{Binding [CustomSize], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
-                <TextBox x:Name="CustomMb" IsEnabled="False" Text="10" Padding="6"/>
-
-                <TextBlock Text="{Binding [Format], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
-
-                <Button x:Name="CompressButton" Content="{Binding [Compress], Source={x:Static local:Loc.Instance}}" Margin="0,16,0,0" Click="CompressButton_Click"/>
-                <ProgressBar x:Name="Progress" Height="6" Margin="0,12,0,0" Minimum="0" Background="#FF2C313A" Foreground="#FF3B82F6" BorderThickness="0"/>
-                <TextBlock x:Name="StatusLabel" Foreground="#FF9AA4B2" Margin="4,10,0,0" TextWrapping="Wrap"/>
-
-                <Button x:Name="ClearButton" Content="{Binding [ClearList], Source={x:Static local:Loc.Instance}}" Margin="0,16,0,0"
-                        Background="#FF374151" Click="ClearButton_Click"/>
-            </StackPanel>
-        </Border>
-
-        <!-- RECHTS: Ergebnis -->
-        <DockPanel Grid.Column="2" Margin="12,0,0,0">
-            <TextBlock DockPanel.Dock="Top" Text="{Binding [Result], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
-            <Grid>
-                <ListBox x:Name="OutputList" Style="{StaticResource CardList}" SelectionMode="Extended"
-                         PreviewMouseLeftButtonDown="OutputList_PreviewMouseLeftButtonDown"
-                         MouseMove="OutputList_MouseMove"/>
-                <TextBlock x:Name="OutputHint" IsHitTestVisible="False"
-                           Text="{Binding [OutputHint], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Grid>
-        </DockPanel>
-    </Grid>
+        <TabItem Header="{Binding [TabSlice], Source={x:Static local:Loc.Instance}}">
+            <Grid/>
+        </TabItem>
+    </TabControl>
 </Window>
