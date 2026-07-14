@@ -96,15 +96,32 @@ public sealed class SliceGrid
         }
     }
 
-    /// <summary>Begrenzt die neue Position so, dass alle betroffenen Bänder gültig bleiben.</summary>
+    /// <summary>
+    /// Begrenzt die neue Position so, dass alle betroffenen Bänder gültig bleiben und sich
+    /// keine Überlappung mit den Nachbarbändern ergibt. Nachbarkanten, die selbst mitwandern
+    /// (Abstand 0 = gemeinsame Linie), begrenzen dabei nicht — sonst liesse sich eine
+    /// gemeinsame Linie gar nicht mehr bewegen.
+    /// </summary>
     private static int ClampEdge(List<Band> bands, List<EdgeHandle> affected, int newPos)
     {
         int min = int.MinValue, max = int.MaxValue;
         foreach (var a in affected)
         {
             var b = bands[a.BandIndex];
-            if (a.IsStart) max = Math.Min(max, b.End - MinBandLength);
-            else min = Math.Max(min, b.Start + MinBandLength);
+            if (a.IsStart)
+            {
+                max = Math.Min(max, b.End - MinBandLength);
+                int prev = a.BandIndex - 1;
+                if (prev >= 0 && !affected.Contains(new EdgeHandle(prev, false)))
+                    min = Math.Max(min, bands[prev].End);
+            }
+            else
+            {
+                min = Math.Max(min, b.Start + MinBandLength);
+                int next = a.BandIndex + 1;
+                if (next < bands.Count && !affected.Contains(new EdgeHandle(next, true)))
+                    max = Math.Min(max, bands[next].Start);
+            }
         }
         if (min != int.MinValue) newPos = Math.Max(newPos, min);
         if (max != int.MaxValue) newPos = Math.Min(newPos, max);

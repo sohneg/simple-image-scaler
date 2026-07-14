@@ -101,6 +101,22 @@ public class SliceGridTests
     }
 
     [Fact]
+    public void MoveColumnEdge_WithGap_CannotOverlapNeighbour()
+    {
+        // Ein schneller Zug weit über den Nachbarn hinaus darf keine überlappenden Bänder erzeugen.
+        var grid = new SliceGrid();
+        grid.Columns.Add(new Band(0, 40));
+        grid.Columns.Add(new Band(50, 100));   // Lücke 40..50
+
+        var handle = grid.FindNearestColumnEdge(40, tolerance: 2)!.Value;
+        grid.MoveColumnEdge(handle, 200);
+
+        Assert.True(grid.Columns[0].End <= grid.Columns[1].Start,
+            $"Bänder überlappen: {grid.Columns[0]} / {grid.Columns[1]}");
+        Assert.Equal(new Band(50, 100), grid.Columns[1]);   // Nachbar bleibt unangetastet
+    }
+
+    [Fact]
     public void MoveRowEdge_WorksTheSameAsColumns()
     {
         var grid = new SliceGrid();
