@@ -14,7 +14,10 @@ public sealed class ImageItem : INotifyPropertyChanged
         set { _sizeBytes = value; OnChanged(nameof(SizeBytes)); OnChanged(nameof(SizeDisplay)); }
     }
 
-    public string SizeDisplay => $"{SizeBytes / 1024.0 / 1024.0:0.00} MB";
+    // Sprite-Zellen sind oft nur ein paar hundert Byte – in MB wären sie alle "0.00".
+    public string SizeDisplay => SizeBytes >= 1024 * 1024
+        ? $"{SizeBytes / 1024.0 / 1024.0:0.00} MB"
+        : $"{SizeBytes / 1024.0:0.0} KB";
 
     // Nur für Output-Items relevant:
     public int Quality { get; set; }
