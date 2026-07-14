@@ -1,0 +1,102 @@
+<UserControl x:Class="ImageScaler.SliceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ImageScaler"
+             FontFamily="Segoe UI" FontSize="13">
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- LINKS: Sheet-Vorschau mit Raster -->
+        <DockPanel Grid.Column="0" Margin="0,0,12,0">
+            <TextBlock DockPanel.Dock="Top" Text="{Binding [Sheet], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
+            <Border Background="#FF181B20" BorderBrush="#FF333842" BorderThickness="1" CornerRadius="4"
+                    AllowDrop="True" DragOver="Sheet_DragOver" Drop="Sheet_Drop">
+                <Grid ClipToBounds="True">
+                    <Image x:Name="Preview" Stretch="Uniform" SnapsToDevicePixels="True"/>
+                    <Canvas x:Name="Overlay" Background="Transparent" AllowDrop="True"
+                            MouseMove="Overlay_MouseMove"
+                            MouseLeftButtonDown="Overlay_MouseLeftButtonDown"
+                            MouseLeftButtonUp="Overlay_MouseLeftButtonUp"
+                            MouseRightButtonDown="Overlay_MouseRightButtonDown"/>
+                    <TextBlock x:Name="DropHint" IsHitTestVisible="False"
+                               Text="{Binding [SliceDropHint], Source={x:Static local:Loc.Instance}}"
+                               Foreground="#FF6B7280" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </DockPanel>
+
+        <!-- MITTE: Regler -->
+        <Border Grid.Column="1" Background="#FF22262E" CornerRadius="8" Padding="16">
+            <StackPanel>
+                <TextBlock Text="{Binding [Settings], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
+
+                <TextBlock Text="{Binding [GridMode], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,8,0,4"/>
+                <ComboBox x:Name="ModeBox" SelectionChanged="ModeBox_SelectionChanged">
+                    <ComboBoxItem Content="{Binding [ByCount], Source={x:Static local:Loc.Instance}}" IsSelected="True"/>
+                    <ComboBoxItem Content="{Binding [BySize], Source={x:Static local:Loc.Instance}}"/>
+                </ComboBox>
+
+                <StackPanel x:Name="CountPanel">
+                    <TextBlock Text="{Binding [ColumnsRows], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <TextBox x:Name="ColumnsBox" Grid.Column="0" Text="4" Padding="6" Margin="0,0,4,0" TextChanged="Param_Changed"/>
+                        <TextBox x:Name="RowsBox"    Grid.Column="1" Text="4" Padding="6" Margin="4,0,0,0" TextChanged="Param_Changed"/>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel x:Name="SizePanel" Visibility="Collapsed">
+                    <TextBlock Text="{Binding [CellSize], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <TextBox x:Name="CellWBox" Grid.Column="0" Text="32" Padding="6" Margin="0,0,4,0" TextChanged="Param_Changed"/>
+                        <TextBox x:Name="CellHBox" Grid.Column="1" Text="32" Padding="6" Margin="4,0,0,0" TextChanged="Param_Changed"/>
+                    </Grid>
+                </StackPanel>
+
+                <TextBlock Text="{Binding [Margins], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBox x:Name="MarginLeftBox"   Grid.Row="0" Grid.Column="0" Text="0" Padding="6" Margin="0,0,4,4" TextChanged="Param_Changed"
+                             ToolTip="{Binding [MarginLeft], Source={x:Static local:Loc.Instance}}"/>
+                    <TextBox x:Name="MarginTopBox"    Grid.Row="0" Grid.Column="1" Text="0" Padding="6" Margin="4,0,0,4" TextChanged="Param_Changed"
+                             ToolTip="{Binding [MarginTop], Source={x:Static local:Loc.Instance}}"/>
+                    <TextBox x:Name="MarginRightBox"  Grid.Row="1" Grid.Column="0" Text="0" Padding="6" Margin="0,4,4,0" TextChanged="Param_Changed"
+                             ToolTip="{Binding [MarginRight], Source={x:Static local:Loc.Instance}}"/>
+                    <TextBox x:Name="MarginBottomBox" Grid.Row="1" Grid.Column="1" Text="0" Padding="6" Margin="4,4,0,0" TextChanged="Param_Changed"
+                             ToolTip="{Binding [MarginBottom], Source={x:Static local:Loc.Instance}}"/>
+                </Grid>
+
+                <TextBlock Text="{Binding [Spacing], Source={x:Static local:Loc.Instance}}" Foreground="#FF9AA4B2" Margin="4,12,0,4"/>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                    <TextBox x:Name="SpacingXBox" Grid.Column="0" Text="0" Padding="6" Margin="0,0,4,0" TextChanged="Param_Changed"/>
+                    <TextBox x:Name="SpacingYBox" Grid.Column="1" Text="0" Padding="6" Margin="4,0,0,0" TextChanged="Param_Changed"/>
+                </Grid>
+
+                <Button x:Name="SliceButton" Content="{Binding [SliceButton], Source={x:Static local:Loc.Instance}}" Margin="0,16,0,0" Click="SliceButton_Click"/>
+                <TextBlock x:Name="StatusLabel" Foreground="#FF9AA4B2" Margin="4,10,0,0" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding [SliceHelp], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
+                           Margin="4,12,0,0" TextWrapping="Wrap" FontSize="11"/>
+            </StackPanel>
+        </Border>
+
+        <!-- RECHTS: Ergebnis -->
+        <DockPanel Grid.Column="2" Margin="12,0,0,0">
+            <TextBlock DockPanel.Dock="Top" Text="{Binding [Result], Source={x:Static local:Loc.Instance}}" Style="{StaticResource Header}"/>
+            <Grid>
+                <ListBox x:Name="OutputList" Style="{StaticResource CardList}" SelectionMode="Extended"
+                         PreviewMouseLeftButtonDown="OutputList_PreviewMouseLeftButtonDown"
+                         MouseMove="OutputList_MouseMove"/>
+                <TextBlock x:Name="OutputHint" IsHitTestVisible="False"
+                           Text="{Binding [SliceOutputHint], Source={x:Static local:Loc.Instance}}" Foreground="#FF6B7280"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</UserControl>

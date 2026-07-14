@@ -76,7 +76,7 @@
         </TabItem>
 
         <TabItem Header="{Binding [TabSlice], Source={x:Static local:Loc.Instance}}">
-            <Grid/>
+            <local:SliceView/>
         </TabItem>
     </TabControl>
 </Window>
